@@ -16,4 +16,4 @@ fi
 
 docker build --build-arg VERSION="${VERSION}" --build-arg ARCH="${ARCH}" --platform="${ARCH}" -t nvim-build . &&
 docker run --rm --entrypoint cat nvim-build "/neovim_${VERSION}_${ARCH}.deb" \
-    > "$dir/neovim_${VERSION}_${ARCH}.deb"
+    > "$dir/build/neovim_${VERSION}_${ARCH}.deb"
