@@ -6,10 +6,14 @@ default_version="$(cd $dir/src/neovim && git describe --tags | sed -e 's/^v//' |
 ARCH="${ARCH:-$default_arch}"
 VERSION="${VERSION:-$default_version}"
 
-echo "ARCH: $ARCH; VERSION: $VERSION"
-exit 0;
+if [[ "$VERSION" != "$default_version" ]]; then
+    echo "Switching to neovim version ${VERSION}"
+    (cd "${dir}/src/neovim" && git co "v${VERSION}" &> /dev/null) || {
+        echo "Invalid neovim version: ${VERSION}"
+        exit 1;
+    }
+fi
 
-echo "Building neovim-${VERSION}-${ARCH}..."
-docker build --build-arg VERSION=${VERSION} --build-arg ARCH=${ARCH} -t nvim-build . &&
+docker build --build-arg VERSION="${VERSION}" --build-arg ARCH="${ARCH}" --platform="${ARCH}" -t nvim-build . &&
 docker run --rm --entrypoint cat nvim-build "/neovim_${VERSION}_${ARCH}.deb" \
     > "$dir/neovim_${VERSION}_${ARCH}.deb"
