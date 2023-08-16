@@ -14,6 +14,8 @@ if [[ "$VERSION" != "$default_version" ]]; then
     }
 fi
 
-docker build --build-arg VERSION="${VERSION}" --build-arg ARCH="${ARCH}" --platform="${ARCH}" -t nvim-build . &&
+echo "[build.sh] Building neovim ${VERSION} for ${ARCH}"
+
+docker build --build-arg VERSION="${VERSION}" --build-arg ARCH="${ARCH}" --platform="linux/${ARCH}" -t nvim-build . &&
 docker run --rm --entrypoint cat nvim-build "/neovim_${VERSION}_${ARCH}.deb" \
     > "$dir/build/neovim_${VERSION}_${ARCH}.deb"
